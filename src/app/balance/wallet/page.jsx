@@ -100,7 +100,7 @@ export default function WalletPage() {
       </div>
 
       {/* Table full width below */}
-      <div className="w-full mt-8 px-4">
+      <div className="w-full mt-8 px-3">
         <Table data={tableData} />
       </div>
     </div>

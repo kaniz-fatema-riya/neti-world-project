@@ -28,10 +28,11 @@ export default function Sidebar() {
   // collapsed: whole sidebar collapsed to icons-only
   const [collapsed, setCollapsed] = useState(false);
 
-  // open groups (only used when not collapsed)
+  // open groups (only used when not collapsed) — include purchase so it can open separately
   const [openGroups, setOpenGroups] = useState({
     myPoint: false,
     balance: false, // nested under myPoint
+    purchase: false, // nested under myPoint (new)
   });
 
   // Toggle collapse
@@ -39,7 +40,7 @@ export default function Sidebar() {
     setCollapsed((c) => !c);
   }
 
-  // Toggle a group dropdown
+  // Toggle a group dropdown (works for myPoint, balance, purchase, etc.)
   function toggleGroup(key) {
     setOpenGroups((s) => ({ ...s, [key]: !s[key] }));
   }
@@ -60,7 +61,14 @@ export default function Sidebar() {
             { label: "Message", href: "/balance/message" },
           ],
         },
-        { label: "Purchase", href: "/purchase" },
+        {
+          label: "Purchase",
+          href: "/purchase",
+          children: [
+            { label: "General Product", href: "/purchase/general" },
+            { label: "Offer Product", href: "/purchase/offer" },
+          ],
+        },
         { label: "Sell", href: "/sell" },
         { label: "Bank Account", href: "/bank-account" },
       ],
@@ -75,7 +83,7 @@ export default function Sidebar() {
 
   // open groups automatically if current pathname matches
   useEffect(() => {
-    const newOpen = { myPoint: false, balance: false };
+    const newOpen = { myPoint: false, balance: false, purchase: false };
 
     // if the path starts with a menu/item href, open its parents
     if (pathname) {
@@ -95,6 +103,15 @@ export default function Sidebar() {
           pathname.startsWith(c.href)
         );
         newOpen.balance = balanceMatch;
+      }
+
+      // Purchase (nested) check:
+      const purchaseItem = menus[0].items.find((it) => it.label === "Purchase");
+      if (purchaseItem?.children) {
+        const purchaseMatch = purchaseItem.children.some((c) =>
+          pathname.startsWith(c.href)
+        );
+        newOpen.purchase = purchaseMatch;
       }
     }
 
@@ -232,9 +249,11 @@ export default function Sidebar() {
                   <div id={`${group.key}-submenu`} className="mt-1">
                     <ul className="space-y-0.5">
                       {group.items.map((item) => {
-                        // if item has children (Balance)
+                        // if item has children (Balance, Purchase, etc.)
                         if (item.children) {
-                          const balanceOpen = openGroups.balance;
+                          // derive a stable key for this nested group (lowercase, no spaces)
+                          const childKey = item.label.toLowerCase().replace(/\s+/g, "");
+                          const childOpen = openGroups[childKey];
                           const anyChildActive = item.children.some((c) =>
                             isActive(c.href)
                           );
@@ -254,25 +273,23 @@ export default function Sidebar() {
                                 </div>
 
                                 <button
-                                  onClick={() => toggleGroup("balance")}
+                                  onClick={() => toggleGroup(childKey)}
                                   className="text-slate-300 p-1 rounded hover:bg-slate-100"
-                                  aria-expanded={!!balanceOpen}
-                                  aria-controls="balance-submenu"
-                                  title="Toggle Balance submenu"
+                                  aria-expanded={!!childOpen}
+                                  aria-controls={`${childKey}-submenu`}
+                                  title={`Toggle ${item.label} submenu`}
                                 >
                                   <ChevronRight
                                     size={14}
-                                    className={
-                                      balanceOpen ? "rotate-90 transform" : ""
-                                    }
+                                    className={childOpen ? "rotate-90 transform" : ""}
                                   />
                                 </button>
                               </div>
 
-                              {/* Balance children */}
-                              {balanceOpen && (
+                              {/* children */}
+                              {childOpen && (
                                 <ul
-                                  id="balance-submenu"
+                                  id={`${childKey}-submenu`}
                                   className="mt-1 space-y-0.5"
                                 >
                                   {item.children.map((c) => {
