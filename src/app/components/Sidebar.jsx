@@ -69,9 +69,7 @@ export default function Sidebar() {
       key: "userPoint",
       label: "User Point",
       icon: <Users size={16} />,
-      items: [
-        { label: "Users", href: "/user-point/users" },
-      ],
+      items: [{ label: "Users", href: "/user-point/users" }],
     },
   ];
 
@@ -93,7 +91,9 @@ export default function Sidebar() {
       // Balance (nested) check:
       const balanceItem = menus[0].items.find((it) => it.label === "Balance");
       if (balanceItem?.children) {
-        const balanceMatch = balanceItem.children.some((c) => pathname.startsWith(c.href));
+        const balanceMatch = balanceItem.children.some((c) =>
+          pathname.startsWith(c.href)
+        );
         newOpen.balance = balanceMatch;
       }
     }
@@ -105,12 +105,16 @@ export default function Sidebar() {
   // helper to check active link
   const isActive = (href) => {
     if (!pathname || !href) return false;
-    return pathname === href || pathname.startsWith(href + "/") || pathname.startsWith(href);
+    return (
+      pathname === href ||
+      pathname.startsWith(href + "/") ||
+      pathname.startsWith(href)
+    );
   };
 
   return (
     <aside
-      className={`flex h-screen flex-col bg-white border-r border-slate-200 text-slate-700 transition-all duration-200 ${
+      className={`flex  flex-col bg-white border-r border-slate-200 text-slate-700 transition-all duration-200 ${
         collapsed ? "w-20" : "w-64"
       }`}
       aria-label="Sidebar"
@@ -119,7 +123,13 @@ export default function Sidebar() {
       <div className="flex items-center gap-2 px-2 py-3 bg-[#0e6ef8] text-white">
         <div className="flex items-center gap-2">
           <div className="w-8 h-9 rounded-md bg-white flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path d="M3 12L12 3L21 12L12 21L3 12Z" fill="#0e6ef8" />
             </svg>
           </div>
@@ -187,7 +197,9 @@ export default function Sidebar() {
                       toggleGroup(group.key);
                     }}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-                      !collapsed && groupOpen ? "bg-slate-100" : "hover:bg-slate-50"
+                      !collapsed && groupOpen
+                        ? "bg-slate-100"
+                        : "hover:bg-slate-50"
                     }`}
                     aria-expanded={!!groupOpen}
                     aria-controls={`${group.key}-submenu`}
@@ -195,14 +207,20 @@ export default function Sidebar() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="text-slate-600">{group.icon}</div>
-                      {!collapsed && <span className="text-sm font-medium">{group.label}</span>}
+                      {!collapsed && (
+                        <span className="text-sm font-medium">
+                          {group.label}
+                        </span>
+                      )}
                     </div>
 
                     {!collapsed && (
                       <div className="ml-auto text-slate-400">
                         <ChevronDown
                           size={14}
-                          className={`transition-transform ${groupOpen ? "rotate-180" : "rotate-0"}`}
+                          className={`transition-transform ${
+                            groupOpen ? "rotate-180" : "rotate-0"
+                          }`}
                         />
                       </div>
                     )}
@@ -217,12 +235,20 @@ export default function Sidebar() {
                         // if item has children (Balance)
                         if (item.children) {
                           const balanceOpen = openGroups.balance;
-                          const anyChildActive = item.children.some((c) => isActive(c.href));
+                          const anyChildActive = item.children.some((c) =>
+                            isActive(c.href)
+                          );
                           return (
                             <li key={item.label} className="pl-6">
                               <div className="flex items-center justify-between px-2 py-1 rounded hover:bg-slate-50">
                                 <div className="flex items-center gap-2">
-                                  <span className={`text-sm ${anyChildActive ? "font-medium text-slate-700" : "text-slate-600"}`}>
+                                  <span
+                                    className={`text-sm ${
+                                      anyChildActive
+                                        ? "font-medium text-slate-700"
+                                        : "text-slate-600"
+                                    }`}
+                                  >
                                     {item.label}
                                   </span>
                                 </div>
@@ -234,13 +260,21 @@ export default function Sidebar() {
                                   aria-controls="balance-submenu"
                                   title="Toggle Balance submenu"
                                 >
-                                  <ChevronRight size={14} className={balanceOpen ? "rotate-90 transform" : ""} />
+                                  <ChevronRight
+                                    size={14}
+                                    className={
+                                      balanceOpen ? "rotate-90 transform" : ""
+                                    }
+                                  />
                                 </button>
                               </div>
 
                               {/* Balance children */}
                               {balanceOpen && (
-                                <ul id="balance-submenu" className="mt-1 space-y-0.5">
+                                <ul
+                                  id="balance-submenu"
+                                  className="mt-1 space-y-0.5"
+                                >
                                   {item.children.map((c) => {
                                     const active = isActive(c.href);
                                     return (
@@ -253,7 +287,9 @@ export default function Sidebar() {
                                               : "text-slate-600 hover:bg-slate-50 before:bg-transparent"
                                           }`}
                                         >
-                                          <span className="text-sm">{c.label}</span>
+                                          <span className="text-sm">
+                                            {c.label}
+                                          </span>
                                         </Link>
                                       </li>
                                     );
@@ -271,7 +307,9 @@ export default function Sidebar() {
                             <Link
                               href={item.href}
                               className={`flex items-center gap-2 px-3 py-2 rounded-l-md relative before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 ${
-                                active ? "bg-sky-600 text-white before:bg-sky-600" : "text-slate-700 hover:bg-slate-50 before:bg-transparent"
+                                active
+                                  ? "bg-sky-600 text-white before:bg-sky-600"
+                                  : "text-slate-700 hover:bg-slate-50 before:bg-transparent"
                               }`}
                             >
                               <span className="text-sm">{item.label}</span>
@@ -290,7 +328,11 @@ export default function Sidebar() {
 
       {/* footer */}
       <div className="px-3 pb-4">
-        {!collapsed ? <div className="text-xs text-slate-400">Powered by Eduman</div> : <div className="text-xs text-slate-400 text-center">Eduman</div>}
+        {!collapsed ? (
+          <div className="text-xs text-slate-400">Powered by Eduman</div>
+        ) : (
+          <div className="text-xs text-slate-400 text-center">Eduman</div>
+        )}
       </div>
     </aside>
   );
