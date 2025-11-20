@@ -42,15 +42,15 @@ const Table = ({ data }) => {
               key={row.id ?? `row-${idx}`}
               className="grid grid-cols-6 border-b border-[#e3f0ff] text-sm text-[#1b3b58]"
             >
-              <div className="px-4 py-3 border-r">{row.date || "-"}</div>
-              <div className="px-4 py-3 border-r">
+              <div className="px-4 py-3 border-[#cfe5ff] border-r">{row.date || "-"}</div>
+              <div className="px-4 py-3 border-[#cfe5ff] border-r">
                 {row.type === "bkash" ? "bKash" : row.branch || "Bank"}
               </div>
-              <div className="px-4 py-3 border-r">
+              <div className="px-4 border-[#cfe5ff] py-3 border-r">
                 {row.accountNumber || "-"}
               </div>
-              <div className="px-4 py-3 border-r">{row.amount || "-"}</div>
-              <div className="px-4 py-3 border-r">{row.status || "-"}</div>
+              <div className="px-4 border-[#cfe5ff] py-3 border-r">{row.amount || "-"}</div>
+              <div className="px-4 py-3 border-[#cfe5ff] border-r">{row.status || "-"}</div>
               <div className="px-4 py-3">
                 {row.type === "bkash" ? (
                   <>

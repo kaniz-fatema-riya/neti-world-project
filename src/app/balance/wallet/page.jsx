@@ -29,56 +29,50 @@ export default function WalletPage() {
     return null;
   };
 
-  const submitBkash = (e) => {
-    const form = new FormData(e.target);
-    const payload = {
-      id: Date.now(),
-      type: "bkash",
-      accountNumber: form.get("accountNumber") || "",
-      amount: form.get("amount") || "",
-      date: form.get("date") || "",
-      mobile: form.get("mobile") || "",
-      transactionId: form.get("transactionId") || "",
-      status: "Pending",
-    };
-
-    const err = validateBkash(payload);
-    if (err) {
-      setFeedback({ type: "error", message: err });
-      return;
-    }
-
-    setTableData((prev) => [...prev, payload]);
-    setFeedback({ type: "success", message: "Bkash submitted!" });
-    e.target.reset();
+  // receive payload object from child (not a DOM event)
+const submitBkash = (payloadFromChild) => {
+  // payloadFromChild already contains the form fields from the BkashForm
+  const payload = {
+    id: Date.now(),
+    type: "bkash",
+    accountNumber: payloadFromChild.accountNumber || "",
+    amount: payloadFromChild.amount || "",
+    date: payloadFromChild.date || "",
+    mobile: payloadFromChild.mobile || "",
+    transactionId: payloadFromChild.transactionId || "",
+    status: "Pending",
   };
 
-  const submitBank = (e) => {
-    const form = new FormData(e.target);
-    const file = form.get("image");
-    const payload = {
-      id: Date.now(),
-      type: "bank",
-      accountNumber: form.get("accountNumber") || "",
-      amount: form.get("amount") || "",
-      date: form.get("date") || "",
-      branch: form.get("branch") || "",
-      depositType: form.get("depositType") || "",
-      note: form.get("note") || "",
-      image: file instanceof File ? file : null,
-      status: "Pending",
-    };
+  // optional: server-side validation or client validation here
+  // const err = validateBkash(payload);
+  // if (err) { setFeedback({ type: "error", message: err }); return; }
 
-    const err = validateBank(payload);
-    if (err) {
-      setFeedback({ type: "error", message: err });
-      return;
-    }
+  setTableData((prev) => [...prev, payload]);
+  
+};
 
-    setTableData((prev) => [...prev, payload]);
-    setFeedback({ type: "success", message: "Bank transaction submitted!" });
-    e.target.reset();
+const submitBank = (payloadFromChild) => {
+  // child sent plain object; if you want file upload, change form to send FormData or handle upload separately
+  const payload = {
+    id: Date.now(),
+    type: "bank",
+    accountNumber: payloadFromChild.accountNumber || "",
+    amount: payloadFromChild.amount || "",
+    date: payloadFromChild.date || "",
+    branch: payloadFromChild.branch || "",
+    depositType: payloadFromChild.depositType || "",
+    note: payloadFromChild.note || "",
+    image: payloadFromChild.image || null, // if child sent a File, keep it
+    status: "Pending",
   };
+
+  // const err = validateBank(payload);
+  // if (err) { setFeedback({ type: "error", message: err }); return; }
+
+  setTableData((prev) => [...prev, payload]);
+  
+};
+
 
   return (
     <div className="w-full">
